@@ -10,7 +10,7 @@ def info_modl():
     return {
         "name": "!описание",
         "description": "Изменяет описание профиля (можно использовать раз в 20 минут, шанс 50%)",
-        "version": 1.1,
+        "version": 1.2,
         "suntax": "!описание [текст] или ответом на сообщение"
     }
 
@@ -19,14 +19,10 @@ def info_modl():
 def register(client, allowed_chats):
     @client.on(events.NewMessage(pattern=r'^!описание(?: (.+))?$'))
     async def change_description(event):
-        # Проверяем, разрешен ли чат
-        if event.chat_id not in allowed_chats:
-            await event.reply("Этот чат не разрешен для использования бота.")
-            return
-
-        # Проверяем, прошло ли 20 минут с последнего использования
         user_id = event.sender_id
         current_time = time.time()
+
+        # Проверяем, прошло ли 20 минут с последнего использования
         if user_id in last_used and current_time - last_used[user_id] < 1200:  # 1200 секунд = 20 минут
             remaining_time = int(1200 - (current_time - last_used[user_id]))
             await event.reply(f"Вы можете использовать эту команду снова через {remaining_time // 60} минут.")
